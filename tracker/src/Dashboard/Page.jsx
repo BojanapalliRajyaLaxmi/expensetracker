@@ -279,7 +279,6 @@ export default function DashboardPage() {
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [categorySpending, setCategorySpending] = useState({});
   const [budgetAlerts, setBudgetAlerts] = useState([]);
-  const [data,setdata]=useState()
   const categoryColors = {
     food: "#FF4C4C",
     travel: "#FF9900",
@@ -381,12 +380,32 @@ export default function DashboardPage() {
 
   const calculateSums = () => {
     let creditSum = 0, debitSum = 0;
+  
+    // Log transactions to check data
+    console.log("Transactions:", transactions);  // Ensure correct structure
+  
     transactions.forEach(({ type, amount }) => {
-      if (type === "credit") creditSum += amount;
-      if (type === "debit") debitSum += amount;
+      // Validate amount is a number before adding
+      if (typeof amount === 'number') {
+        if (type === "credit") {
+          creditSum += amount;
+        } else if (type === "debit") {
+          debitSum += amount;
+        }
+      }
     });
-    return { creditSum, debitSum, balance: creditSum - debitSum, savings: creditSum - debitSum };
+  
+    // Log the sums for debugging
+    console.log("Credit Sum:", creditSum, "Debit Sum:", debitSum);
+  
+    return {
+      creditSum,
+      debitSum,
+      balance: creditSum - debitSum,
+      savings: creditSum - debitSum,  // savings are calculated the same as balance
+    };
   };
+  
 
   const { creditSum, debitSum, balance, savings } = calculateSums();
 
