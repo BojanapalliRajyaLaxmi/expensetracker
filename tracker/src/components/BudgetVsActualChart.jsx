@@ -1,5 +1,6 @@
+import React from 'react';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
 const BudgetVsActualChart = ({ transactions }) => {
@@ -35,15 +36,17 @@ const BudgetVsActualChart = ({ transactions }) => {
   return (
     <div className="mt-8">
       <h3 className="text-lg font-semibold mb-2">📈 Budget vs Actual</h3>
-      <BarChart width={700} height={400} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="budget" fill="#82ca9d" name="Budget" />
-        <Bar dataKey="actual" fill="#8884d8" name="Actual" />
-      </BarChart>
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="month" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="budget" fill="#82ca9d" name="Budget" />
+          <Bar dataKey="actual" fill="#8884d8" name="Actual" />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 };

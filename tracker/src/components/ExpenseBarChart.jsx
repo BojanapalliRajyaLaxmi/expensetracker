@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import {
-  BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip as BarTooltip,
+  BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip as BarTooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Tooltip as PieTooltip, Legend
 } from 'recharts';
 
@@ -64,9 +64,8 @@ export default function ExpenseCharts({ transactions }) {
   return (
     <div className="mt-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Monthly Expenses Bar Chart */}
         <div>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 gap-12">
             <h3 className="text-lg font-semibold">📊 Monthly Expenses ({selectedYear})</h3>
             <select
               value={selectedYear}
@@ -80,45 +79,64 @@ export default function ExpenseCharts({ transactions }) {
               ))}
             </select>
           </div>
-          <BarChart width={600} height={350} data={monthlyData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <BarTooltip />
-            <Bar dataKey="total" fill="#8884d8" />
-          </BarChart>
+
+          {/* Responsive Bar Chart */}
+          <ResponsiveContainer width="100%" height={350}>
+            <BarChart data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <BarTooltip />
+              <Bar dataKey="total" fill="#8884d8" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
 
         {/* Category-wise Pie Chart */}
         <div>
           <h3 className="text-lg font-semibold mb-2">🥧 Category-wise Expenses</h3>
-          <PieChart width={600} height={350}>
-            <Pie
-              data={categoryData}
-              dataKey="value"
-              nameKey="name"
-              cx="40%"
-              cy="50%"
-              outerRadius={110}
-              label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
-            >
-              {categoryData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={categoryColors[entry.name] || "#8884d8"}
-                />
-              ))}
-            </Pie>
-            <PieTooltip />
+          <ResponsiveContainer width="120%" height={380}>
+            <PieChart>
+              <Pie
+                data={categoryData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius="80%"
+                label={false}
+              >
+                {categoryData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={categoryColors[entry.name] || "#8884d8"}
+                  />
+                ))}
+              </Pie>
+              <PieTooltip />
+              <Legend
+                layout="horizontal"
+                align="center"
+                verticalAlign="bottom"
+                className="lg:hidden mt-20" 
+                formatter={(value, entry) =>
+                  `${entry.payload.name}: $${entry.payload.value.toFixed(2)}`
+                }
+              />
+            </PieChart>
+          </ResponsiveContainer>
+
+          {/* Legend below the Pie chart on smaller screens */}
+          <div className="hidden lg:flex justify-center mt-4">
             <Legend
-              layout="vertical"
-              align="right"
-              verticalAlign="middle"
+              layout="horizontal"
+              align="center"
+              verticalAlign="bottom"
               formatter={(value, entry) =>
                 `${entry.payload.name}: $${entry.payload.value.toFixed(2)}`
               }
             />
-          </PieChart>
+          </div>
         </div>
       </div>
     </div>
